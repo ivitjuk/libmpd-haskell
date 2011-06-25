@@ -13,9 +13,9 @@ module Network.MPD.Core (
     -- * Classes
     MonadMPD(..),
     -- * Data types
-    MPD, MPDError(..), ACKType(..), Response, Host, Port, Password,
+    MPD, MPDPersistent, MPDError(..), ACKType(..), Response, Host, Port, Password,
     -- * Running
-    withMPDEx,
+    withMPDEx, withMPDPersistent, makeMPDPersistent,
     -- * Interacting
     getResponse, kill,
     ) where
@@ -86,6 +86,12 @@ data MPDState =
              , stVersion  :: (Int, Int, Int)
              }
 
+-- | Persistent MPD connection state
+data MPDPersistent =
+    MPDPersistent { persState   :: MPDState
+                  , persEnv :: (Host, Port)
+                  }
+
 -- | A response is either an 'MPDError' or some result.
 type Response = Either MPDError
 
@@ -95,6 +101,20 @@ withMPDEx host port pw x = withSocketsDo $
     runReaderT (evalStateT (runErrorT . runMPD $ open >> x) initState)
                (host, port)
                    where initState = MPDState Nothing pw (0, 0, 0)
+
+-- | Run MPD action on persistent connection
+withMPDPersistent :: MPDPersistent -> MPD a -> IO (Response a)
+withMPDPersistent pers x = withSocketsDo $
+    runReaderT (evalStateT (runErrorT . runMPD $ x) (persState pers)) (persEnv pers)
+
+-- | Create persistent MPD connection. To be used with withMPDPersistent
+makeMPDPersistent :: Host -> Port -> Password -> IO (Response MPDPersistent)
+makeMPDPersistent host port pw = 
+    withMPDEx host port pw mpdPersistent
+    where mpdPersistent = MPD $ do
+                            st <- get
+                            (host, port) <- ask
+                            return $ MPDPersistent st (host, port)
 
 mpdOpen :: MPD ()
 mpdOpen = MPD $ do

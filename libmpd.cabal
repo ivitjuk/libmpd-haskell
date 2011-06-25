@@ -1,4 +1,4 @@
-Name:               libmpd
+Name:               libmpd-p
 Version:            0.7.0
 License:            LGPL
 License-file:       LICENSE
@@ -6,8 +6,8 @@ Copyright:          Ben Sinclair 2005-2009, Joachim Fasting 2010, 2011
 Author:             Ben Sinclair
 Maintainer:         Joachim Fasting <joachim.fasting@gmail.com>
 Stability:          beta
-Homepage:           http://github.com/joachifm/libmpd-haskell
-Bug-reports:        http://github.com/joachifm/libmpd-haskell/issues
+Homepage:           http://github.com/neovirtus/libmpd-haskell
+Bug-reports:        http://github.com/neovirtus/libmpd-haskell/issues
 Synopsis:           An MPD client library.
 Description:        A client library for MPD, the Music Player Daemon
                     (<http://www.musicpd.org/>).

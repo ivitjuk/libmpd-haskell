@@ -13,10 +13,10 @@
 
 module Network.MPD (
     -- * Basic data types
-    MonadMPD, MPD, MPDError(..), ACKType(..), Response,
+    MonadMPD, MPD, MPDPersistent, MPDError(..), ACKType(..), Response,
     Host, Port, Password,
     -- * Connections
-    withMPD, withMPDEx,
+    withMPD, withMPDEx, withMPDPersistent, makeMPDPersistent,
     module Network.MPD.Commands,
     ) where
 
